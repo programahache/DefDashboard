@@ -1,0 +1,52 @@
+@media (min-width: 640px) {
+    #layout {
+        display: grid;
+        grid-template-areas:
+            "aside main main"
+        ;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: 1fr;
+
+        overflow-x: hidden;
+
+    }
+
+}
+
+
+
+main {
+    grid-area: main;
+}
+
+aside {
+    grid-area: aside;
+}
+
+a.active {
+    color: white;
+}
+
+aside:hover nav {
+    transform: translatey(-1rem);
+
+
+}
+
+a.active span {
+    --tw-bg-opacity: 1;
+    background-color: rgb(252 165 165 / var(--tw-bg-opacity));
+    border-radius: 0.5rem;
+    padding-top: 0.25rem /* 4px */;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem /* 8px */;
+    padding-right: 0.5rem /* 8px */;
+    
+    
+}
+
+
+.modal {
+    background-color: rgba(0, 0, 0, .1);
+
+}
