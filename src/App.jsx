@@ -19,6 +19,8 @@ import Modal from './components/Modals/Modal'
 import ListPedidosH from './components/Items/ListPedidosH';
 import Home from './pages/Home';
 
+import NewOrderButton from './components/Botones/NewOrderButton';
+
 
 
 
@@ -42,11 +44,15 @@ function App() {
 
   return (
     <div id="layout" className=" relative bg-neutral-800 h-screen ">
+      <NewOrderButton />
+
       {/* NAVEGACION DE LA PAGINA */}
       <Aside />
-      <main className="flex flex-col w-full h-screen overflow-y-auto overflow-x-hidden gap-5  pb-5 transition-all ease-linear duration-700">
+      <main className=" relative  flex flex-col w-full h-screen overflow-y-auto overflow-x-hidden gap-5  pb-5 transition-all ease-linear duration-700">
+
         {/* BARRA DE NAVEGACION */}
         <NavBar />
+
         <Outlet />
       </main>
 

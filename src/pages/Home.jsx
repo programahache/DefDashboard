@@ -26,7 +26,8 @@ function Home() {
 
                 {/* //Lista de pedidos */}
                 <Card wid="600px" hei="400px" title={"Lista de pedidos"} >
-                    <div className='mb-2 border-b-2 '>
+                   
+                    <div className='mb-2 border-b-2 p-2'>
                         <ListPedidosH nombre={"Pedido #35604"} />
                     </div>
                     <div className='mb-2 border-b-2 p-2'>
