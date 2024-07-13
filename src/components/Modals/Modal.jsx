@@ -14,7 +14,7 @@ function Modal({ isModal, setIsmodal, nombre }) {
             <h1 className="font-bold">{nombre}</h1>
           </div>
 
-          <button className="bg-red-200 px-3 py-1 rounded-full text-center  " onClick={() =>  setIsmodal(false)}>
+          <button className="bg-red-200 px-3 py-1 rounded-full text-center  " onClick={() => setIsmodal(false)}>
             x
           </button>
 
