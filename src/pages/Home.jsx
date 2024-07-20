@@ -12,7 +12,7 @@ function Home() {
         <>
             {/* GADGETS DE DATOS DEL DIA DE HOY */}
             <div className='flex flex-col lg:flex-row w-full gap-2 justify-around px-2'>
-                <MiniCard title={"INGRESOS HOY"} value={"53.000"} since={"ayer"} porcentaje={55} icon={"payments"} iconColor={""} />
+                <MiniCard title={"INGRESOS HOY"} value={"100000020.23"} since={"ayer"} porcentaje={55} icon={"payments"} iconColor={""} ismoney={true} />
                 <MiniCard title={"Nuevos clientes"} value={103} since={"10/01/24"} porcentaje={55} icon={"groups"} />
                 <MiniCard title={"Pedidos hoy"} value={11} since={"25/02/22"} porcentaje={155} icon={"checklist"} />
                 <MiniCard title={"Ocupación"} value={"73%"} since={"10/20/24"} porcentaje={55} icon={"table_restaurant"} />
@@ -26,7 +26,7 @@ function Home() {
 
                 {/* //Lista de pedidos */}
                 <Card wid="600px" hei="400px" title={"Lista de pedidos"} >
-                   
+
                     <div className='mb-2 border-b-2 p-2'>
                         <ListPedidosH nombre={"Pedido #35604"} />
                     </div>

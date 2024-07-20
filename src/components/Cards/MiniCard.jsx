@@ -1,13 +1,20 @@
+import { formateNumber } from "../../funciones/funtions"
+
+function MiniCard({ title, since, value, porcentaje, icon, ismoney }) {
 
 
-function MiniCard({ title, since, value, porcentaje, icon }) {
+
+
+
+
+
     return (
-        <div className='card bg-amber-50 sm:w-[100%] lg:w-[25%] py-4 px-5 rounded-xl flex justify-between'>
+        <div className='card bg-amber-50 sm:w-[100%] lg:w-[25%] py-4 px-5 rounded-xl flex justify-between shadow-inner  shadow-red-200'>
 
             <div className='flex flex-col gap-1'>
                 <div>
                     <h4 className='text-lg uppercase font-medium'>{title}</h4>
-                    <h3 className='text-base font-bold'>${value}</h3>
+                    <h3 className='text-base font-bold'>{ismoney ? formateNumber(value) : value}</h3>
                 </div>
                 <p> <span className='text-green-600 d'>+{porcentaje}%</span> desde {since} </p>
             </div>
