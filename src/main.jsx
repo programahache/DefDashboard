@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
+import Cocina from './pages/Cocina.jsx'
 
 import {
   createBrowserRouter,
@@ -21,7 +22,12 @@ const router = createBrowserRouter([
     {
       path: "/finanzas",
       element:<p> Hola</p>
-    }]
+    },
+  {
+    path: "/cocina",
+    element: <Cocina />
+  }
+  ]
   }
 ])
 

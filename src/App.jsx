@@ -48,7 +48,7 @@ function App() {
 
       {/* NAVEGACION DE LA PAGINA */}
       <Aside />
-      <main className=" relative  flex flex-col w-full h-screen overflow-y-auto overflow-x-hidden gap-5  pb-5 transition-all ease-linear duration-700">
+      <main className=" relative  flex flex-col w-full h-screen overflow-y-auto overflow-x-hidden gap-5  pb-5 ">
 
         {/* BARRA DE NAVEGACION */}
         <NavBar />

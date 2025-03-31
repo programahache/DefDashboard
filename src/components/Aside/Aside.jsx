@@ -9,7 +9,7 @@ function Aside() {
 
     return (
 
-        <aside className="hidden  sm:flex sm:flex-col bg-neutral-700 text-white sm:relative text-bold h-full px-2 w-16 hover:w-[260px] overflow-y-hidden overflow-x-hidden transition-[width] ease-linear duration-500 ">
+        <aside className="hidden  sm:flex sm:flex-col bg-neutral-700 text-white sm:relative text-bold h-full px-2 w-16 hover:w-[260px] overflow-y-hidden overflow-x-hidden   ">
             <div className="toggle flex items-center justify-between p-2 ">
                 <div className="logo flex items-center gap-2 ">
                     <picture className='w-10 h-10'>
@@ -24,9 +24,9 @@ function Aside() {
                 </button>
             </div>
             <div className='sidebar mt-3 h-full flex flex-col '>
-                <nav className='flex font-semibold  flex-col gap-5 2xl:gap-10 w-full h-full justify-between sm:py-2 lg:p-0 lg:justify-center  transition-[all] duration-700 ease-linear  '>
+                <nav className='flex font-semibold  flex-col gap-5 2xl:gap-10 w-full h-full justify-between sm:py-2 lg:p-0 lg:justify-center     '>
 
-                    <NavLink to="/Home" className={`p-2 fs-base flex items-center gap-2 hover:-translate-y hover:bg-red-500 transition-all ease-linear duration-300`}>
+                    <NavLink to="/Home" className={`p-2 fs-base flex items-center gap-2 hover:-translate-y hover:bg-red-500 transition-transform ease-linear duration-300`}>
                         <span class="material-symbols-outlined px-2  ">
                             home
                         </span>
@@ -40,12 +40,12 @@ function Aside() {
                         Finanzas
                     </NavLink>
 
-                    <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
+                    <NavLink to="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
                         <span class="material-symbols-outlined  px-2  ">
                             inventory
                         </span>
                         Inventario
-                    </a>
+                    </NavLink>
 
                     <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
                         <span class="material-symbols-outlined  px-2  ">
@@ -68,12 +68,12 @@ function Aside() {
                         Layer
                     </a>
 
-                    <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
+                    <NavLink to="/cocina" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
                         <span class="material-symbols-outlined  px-2  ">
                             range_hood
                         </span>
                         Cocina
-                    </a>
+                    </NavLink>
                     
                     <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
                         <span class="material-symbols-outlined  px-2  ">
