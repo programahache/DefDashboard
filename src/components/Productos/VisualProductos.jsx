@@ -1,9 +1,24 @@
-import React, {useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
+import { deleteproductos, getproductos } from '../../../utils/productos'
+import Form from './items/Form'
+import Modal from './items/Modal'
+import { Link } from 'react-router-dom'
+
+
+import ProductoCard from '../Cards/ProductoCard'
+import ProductMiniCard from './cards/productMiniCard'
+import FilterCategoryy from './FilterCategoryy'
 
 function VisualProductos({ data }) {
 
     const [productos, setProductos] = useState([])
+    const [editProducto, setEditProducto] = useState({})
     const [loading, setLoading] = useState(true)
+    const [isEdit, setIsEdit] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedSubcategory, setSelectedSubcategory] = useState(null);
 
     useEffect(() => {
         if (!data) return
@@ -48,24 +63,85 @@ function VisualProductos({ data }) {
     //   }
 
 
+    const handlerDelete = (id) => {
+        const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.");
+        if (confirmDelete) {
+            deleteproductos(id)
+                .then((res) => {
+                    if (res.status === 200) {
+                        // setProductos(productos.filter((producto) => producto.id_producto !== id));
+                        alert("Producto eliminado con éxito.");
+                        getproductos()
+                            .then((data) => {
+                                console.log(data)
+                                setProductos(data);
+                                setLoading(false);
+                            })
+                            .catch((error) => {
+                                console.error("Error al obtener los productos:", error);
+                            });
+                    } else {
+                        alert("Error al eliminar el producto. Inténtalo de nuevo.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error al eliminar el producto:", error);
+                    alert("Error al eliminar el producto. Inténtalo de nuevo.");
+                });
+        }
+    }
+
+    const handlerEdit = (id) => {
+        const productoToEdit = productos.find((producto) => producto.id_producto === id);
+        setEditProducto(productoToEdit);
+        setIsEdit(true);
+        setIsOpen(true);
+
+    }
+
+    const categorias = productos.map((producto) => producto.categoria)
+    const uniqueCategorias = [...new Set(categorias)] // Elimina duplicados de categorias
+    console.log(uniqueCategorias)
+
+    const filteredProductos = selectedCategory
+        ? productos.filter((producto) => producto.categoria === selectedCategory)
+        : productos;
+
+
     return (
         <>
-            <div className="flex flex-col gap-5 w-full h-full overflow-y-auto overflow-x-hidden p-5">
+            <div className="flex flex-col gap-5 w-full h-full overflow-y-auto overflow-x-hidden ">
                 <h1 className="text-white text-2xl font-bold">Productos</h1>
+                <div>
+                    <FilterCategoryy 
+                        categorias={uniqueCategorias} 
+                        onCategorySelect={(categoria) => setSelectedCategory(categoria)} 
+                    />
+                    <div>
+                          <Link to="/productos/crear" className='bg-red-500 text-white px-4 py-2 rounded-lg mt-5'>Crear Producto</Link>
+                    </div>
+                </div>
                 <div className="grid grid-cols-4 gap-5">
                     {loading ? (
                         <p className="text-white">Cargando...</p>
                     ) : (
-                        productos.map((producto) => (
-                            <div key={producto.id} className="bg-gray-800 p-5 rounded-lg shadow-md">
-                                <img src={producto.imagen} alt={producto.nombre} className="w-full h-32 object-cover rounded-lg mb-3" />
-                                <h2 className="text-white text-xl font-semibold">{producto.nombre}</h2>
-                                <p className="text-gray-400">{producto.descripcion}</p>
-                                <p className={`${producto.estado === "Activo"? "text-green-500" : "text-red-500" } font-bold`}>${producto.precio}</p>
-                            </div>
+                        filteredProductos.map((producto, key) => (
+                            <ProductMiniCard 
+                                key={key} 
+                                producto={producto} 
+                                handlerDelete={handlerDelete} 
+                                handlerEdit={handlerEdit} 
+                            />
                         ))
                     )}
                 </div>
+
+                <dialog open={isEdit} className="bg-gray-500 w-1/2 h-1/2 rounded-md p-5 flex-col gap-5 absolute z-50" id='modal'>
+                    formulario de edicion
+                    <Form setIsOpen={setIsOpen} isEdit={isEdit} editProducto={editProducto} />
+                    <button onClick={() => { setIsEdit(false) }} className='bg-red-500 p-2 mt-2'>Cerrar</button>
+
+                </dialog>
             </div>
         </>
     )

@@ -61,7 +61,7 @@ export const createproductos = async (productos) => {
 
 // FUNCION PARA ACTUALIZAR UN PRODUCTO
 export const updateproductos = async (id, productos) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/productos/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/productos/actualizar/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -74,11 +74,18 @@ export const updateproductos = async (id, productos) => {
 
 // FUNCION PARA ELIMINAR UN PRODUCTO
 export const deleteproductos = async (id) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/productos/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/productos/eliminar/${id}`, {
         method: 'DELETE'
     });
+  
     const data = await response.json();
-    return data;
-}
+    if (response.status === 200) {
+        return {...data, status: response.status};
+    } else {
+        throw new Error('Error al eliminar el producto');
+    }
+}               
+ 
+// FUNCION PARA OBTENER UN PRODUCTO POR SU NOMBRE
 
 

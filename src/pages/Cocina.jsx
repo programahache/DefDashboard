@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getproductos } from '../../utils/productos'
 import VisualProductos from '../components/Productos/VisualProductos'
-import Modal from '../components/Productos/items/Modal'
+import { Link } from 'react-router-dom'
 
 function Cocina() {
 
@@ -19,26 +19,13 @@ function Cocina() {
     }, [])
 
 
-    console.log(productos)
 
     return (
-        <div className='p-10'>
-            <p>
-                Productos
-            </p>
-            <p className='text-gray-500'>
-                Listado de productos disponibles en la cocina.
-            </p>
+        <div className='px-5'>
             <VisualProductos data={productos} />
-            <div className='flex justify-end'>
-            
-                <button onClick={()=>{setIsOpen(!isOpen)}}  className='bg-red-500 text-white px-4 py-2 rounded-md' >Agregar producto</button>
-                
-            </div>
-            <Modal isOpen={isOpen} setIsOpen />
         </div>
 
-        
+
     )
 }
 

@@ -1,3 +1,10 @@
+#layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+
 @media (min-width: 640px) {
     #layout {
         display: grid;
@@ -15,12 +22,27 @@
 
 
 
+label {
+    @apply text-gray-400 text-lg;
+}
+
+
+
 main {
     grid-area: main;
+    background: #000000;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #434343, #000000);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #434343, #000000);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
 }
 
 aside {
     grid-area: aside;
+    z-index: 10;
+    background-color: #000000;
 }
 
 a.active {
@@ -59,9 +81,25 @@ a.active span {
 }
 
 
-.ButtonAction:hover> div {
+.ButtonAction:hover>div {
     display: block;
     background-color: blue;
-   
+
 }
 
+/* BOTONES */
+
+.btn-1-editar {
+    @apply bg-blue-500 text-white font-bold py-2 rounded-lg px-4;
+    @apply hover:bg-blue-700 hover:text-white;
+}
+
+.btn-1-eliminar {
+    @apply bg-red-500 text-white font-bold py-2 px-4 rounded-lg;
+    @apply hover:bg-red-700 hover:text-white;
+}
+
+.btn-1-guardar {
+    @apply bg-green-500 text-white font-bold py-2 px-4 rounded;
+    @apply hover:bg-green-700 hover:text-white;
+}

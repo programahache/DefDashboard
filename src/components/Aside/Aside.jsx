@@ -9,97 +9,67 @@ function Aside() {
 
     return (
 
-        <aside className="hidden  sm:flex sm:flex-col bg-neutral-700 text-white sm:relative text-bold h-full px-2 w-16 hover:w-[260px] overflow-y-hidden overflow-x-hidden   ">
-            <div className="toggle flex items-center justify-between p-2 ">
-                <div className="logo flex items-center gap-2 ">
-                    <picture className='w-10 h-10'>
-                        <img src={logo} alt="logo restaurante " />
-                    </picture>
-                    <h2 className='truncate'>Calamardo felix</h2>
+        <aside
+            className="flex flex-col relative bg-gray-800 text-white h-screen  top-0 left-0 w-16 hover:w-64 overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out group"
+            id='aside'
+        >
+            {/* Encabezado */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                <div className="flex items-center gap-3 min-w-max">
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        className="w-8 h-8 object-contain"
+                    />
+                    <span className="text-lg font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-200 truncate">
+                        Calamardo Félix
+                    </span>
                 </div>
-                <button className='close' id='close-btn'>
-                    <span class="material-symbols-outlined py-3">
-                        close
+                <button
+                    className="p-1 hover:bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => {/* Lógica para cerrar */ }}
+                >
+                    <span className="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+
+            {/* Menú de navegación */}
+            <nav className="flex-1 flex flex-col p-2 gap-1 mt-2">
+                {[
+                    { to: "/Home", icon: "home", text: "Inicio" },
+                    { to: "/finanzas", icon: "savings", text: "Finanzas" },
+                 
+                    { to: "/cocina", icon: "range_hood", text: "Cocina" },
+         
+                ].map((item, index) => (
+                    <NavLink
+                        key={index}
+                        to={item.to}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 p-3 rounded-lg transition-colors
+          ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
+                        }
+                    >
+                        <span className="material-symbols-outlined min-w-[24px]">
+                            {item.icon}
+                        </span>
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 truncate">
+                            {item.text}
+                        </span>
+                    </NavLink>
+                ))}
+            </nav>
+
+            {/* Pie de página */}
+            <div className="mt-auto border-t border-gray-700 p-2">
+                <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700">
+                    <span className="material-symbols-outlined">logout</span>
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        Cerrar sesión
                     </span>
                 </button>
             </div>
-            <div className='sidebar mt-3 h-full flex flex-col '>
-                <nav className='flex font-semibold  flex-col gap-5 2xl:gap-10 w-full h-full justify-between sm:py-2 lg:p-0 lg:justify-center     '>
-
-                    <NavLink to="/Home" className={`p-2 fs-base flex items-center gap-2 hover:-translate-y hover:bg-red-500 transition-transform ease-linear duration-300`}>
-                        <span class="material-symbols-outlined px-2  ">
-                            home
-                        </span>
-                        Home
-                    </NavLink>
-
-                    <NavLink to="/finanzas" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
-                        <span class="material-symbols-outlined  px-2  ">
-                            savings
-                        </span>
-                        Finanzas
-                    </NavLink>
-
-                    <NavLink to="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
-                        <span class="material-symbols-outlined  px-2  ">
-                            inventory
-                        </span>
-                        Inventario
-                    </NavLink>
-
-                    <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
-                        <span class="material-symbols-outlined  px-2  ">
-                            assignment_ind
-                        </span>
-                        Empleados
-                    </a>
-
-                    <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
-                        <span class="material-symbols-outlined  px-2  ">
-                            monitoring
-                        </span>
-                        Marketing
-                    </a>
-
-                    <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
-                        <span class="material-symbols-outlined  px-2  ">
-                            layers
-                        </span>
-                        Layer
-                    </a>
-
-                    <NavLink to="/cocina" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
-                        <span class="material-symbols-outlined  px-2  ">
-                            range_hood
-                        </span>
-                        Cocina
-                    </NavLink>
-                    
-                    <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
-                        <span class="material-symbols-outlined  px-2  ">
-                            calendar_month
-                        </span>
-                        Calendar
-                    </a>
-
-                    <a href="#" className='p-2 fs-base flex items-center gap-2 hover:-translate-y-1 hover:bg-red-500 transition-all ease-linear duration-300'>
-                        <span class="material-symbols-outlined  px-2  ">
-                            calendar_month
-                        </span>
-                        Distribución 
-                    </a>
-
-
-                </nav>
-
-            </div>
-
-            {/* <div className='absolute bottom-1 truncate border-y p-2 bg-red-200 w-full'>
-                <p>Cerrar sesion</p>
-            </div> */}
-
         </aside>
-
     )
 }
 

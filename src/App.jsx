@@ -44,7 +44,7 @@ function App() {
 
   return (
     <div id="layout" className=" relative bg-neutral-800 h-screen ">
-      <NewOrderButton />
+   
 
       {/* NAVEGACION DE LA PAGINA */}
       <Aside />

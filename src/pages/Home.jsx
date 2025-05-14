@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import MiniCard from '../components/Cards/MiniCard';
 import Card from '../components/Cards/Card';
 import LineChart from '../components/Charts/LineChart';
@@ -7,14 +7,38 @@ import UserMember from '../components/Items/UserMember';
 import MenuItem from '../components/Items/MenuItem';
 import InventarioItem from '../components/Items/InventarioItem';
 
+import { getCantidadPedidos } from '../../utils/pedidos';
+
 function Home() {
+
+    const [cantidadPedidos, setCantidadPedidos] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const data = await getCantidadPedidos();
+                setCantidadPedidos(data);
+            } catch (err) {
+                setError('No se pudo cargar la cantidad de pedidos');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+
+
     return (
         <>
             {/* GADGETS DE DATOS DEL DIA DE HOY */}
             <div className='flex flex-col lg:flex-row w-full gap-2 justify-around px-2'>
-                <MiniCard title={"INGRESOS HOY"} value={"100000020.23"} since={"ayer"} porcentaje={55} icon={"payments"} iconColor={""} ismoney={true} />
+                <MiniCard title={"INGRESOS "} value={"100000020.23"} since={"ayer"} porcentaje={55} icon={"payments"} iconColor={""} ismoney={true} />
                 <MiniCard title={"Nuevos clientes"} value={103} since={"10/01/24"} porcentaje={55} icon={"groups"} />
-                <MiniCard title={"Pedidos hoy"} value={11} since={"25/02/22"} porcentaje={155} icon={"checklist"} />
+                <MiniCard title={"Pedidos"} value={cantidadPedidos} since={"25/02/22"} porcentaje={155} icon={"checklist"} />
                 <MiniCard title={"Ocupación"} value={"73%"} since={"10/20/24"} porcentaje={55} icon={"table_restaurant"} />
             </div>
 
