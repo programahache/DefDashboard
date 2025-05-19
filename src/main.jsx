@@ -6,6 +6,9 @@ import CrearProducto from './pages/CrearProducto.jsx'
 import EditarProducto from './pages/EditarProducto.jsx'
 import PedidosAdmin from './pages/Pedidos/Admin.jsx'
 import CrearPedido from './pages/Pedidos/CrearPedido.jsx'
+import CrearDos from './pages/Pedidos/CrearDos.jsx'
+import PedidoDetalle from './pages/Pedidos/pedidoDetalle.jsx'
+import ProductoPage from './pages/ProductoPage.jsx'
 
 import {
   createBrowserRouter,
@@ -35,9 +38,14 @@ const router = createBrowserRouter([
       path: "/productos/crear",
       element: <CrearProducto />
     },
+    // {
+    //   path: "/productos/editar/:id",
+    //   element: <EditarProducto />
+    // },
     {
       path: "/productos/editar/:id",
-      element: <EditarProducto />
+      element: <ProductoPage />
+
     },
     {
       path: "/pedidos",
@@ -47,6 +55,17 @@ const router = createBrowserRouter([
       {
       path: "/pedidos/crear",
       element: <CrearPedido />
+
+    },
+     {
+      path: "/pedidos/crear/dos",
+      element: <CrearDos />
+
+    },
+     
+     {
+      path: "/pruebas/:id",
+      element: <ProductoPage />
 
     }
     ]

@@ -1,32 +1,76 @@
 import { useState } from 'react'
-
-import Hamburguesa from '../../assets/hamburguesa.png'
+import { Clock, MapPin, CreditCard, ChevronRight } from "lucide-react"
 import Modal from '../Modals/Modal'
 
+function getStatusColor(estado) {
+  switch (estado) {
+    case "Pendiente":
+      return "bg-yellow-100 text-yellow-800"
+    case "Completado":
+      return "bg-green-100 text-green-800"
+    case "Enviado":
+      return "bg-blue-100 text-blue-800"
+    case "Cancelado":
+      return "bg-red-100 text-red-800"
+    default:
+      return "bg-gray-100 text-gray-800"
+  }
+}
 
+function ListPedidosH({ nombre, pedido}) {
+  const [isModal, setIsmodal] = useState(false)
 
-function ListPedidosH({ nombre }) {
+//   const pedido = {
+//     id_pedido_online: 17,
+//     id_cliente: 1,
+//     total: "627.00",
+//     estado: "Completado",
+//     direccion_envio: "Prueba 10",
+//     metodo_pago: "Efectivo",
+//     fecha_pedido: "2025-05-15T16:20:53.000Z"
+//   }
 
-    const [isModal, setIsmodal] = useState(false)
-
-    return (
-        <div className='flex justify-between items-center'>
-            <div className='flex flex-col items-start' >
-                <p className='font-bold'>{nombre}</p>
-                <span>11/07/2024 6:37 am</span>
-
-                {/* <span className={`  ${status ? "bg-green-300" : "bg-red-300"}  px-2 py-1 rounded tex-center font-semibold capitalize text-sm`}>Activo</span>
-                    <p>Pedido generado </p> */}
-            </div>
-
-            <div>
-                <button onClick={() => { setIsmodal(true) }} className='hover:bg-blue-300 border border-sky-500  px-2 py-1 rounded-lg   ' >Mas</button>
-            </div>
-            {isModal ? <Modal setIsmodal={setIsmodal} isModal={isModal} nombre={nombre} /> : null}
-
+  return (
+    <>
+      <div
+        className="flex items-center justify-between bg-white rounded-xl shadow p-4 mb-3 hover:shadow-md transition cursor-pointer border border-gray-100"
+        onClick={() => setIsmodal(true)}
+      >
+        <div className="flex flex-col gap-1 flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(pedido.estado)}`}>
+              {pedido.estado}
+            </span>
+            <span className="text-xs text-gray-400">#{pedido.id_pedido_online}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+            <Clock className="h-4 w-4 mr-1" />
+            {new Date(pedido.fecha_pedido).toLocaleString("es-CO")}
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 truncate">
+            <MapPin className="h-4 w-4 mr-1" />
+            <span className="truncate">{pedido.direccion_envio}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <CreditCard className="h-4 w-4 mr-1" />
+            {pedido.metodo_pago}
+          </div>
         </div>
-
-    )
+        <div className="flex flex-col items-end ml-4">
+          <span className="font-bold text-lg text-blue-700">${Number(pedido.total).toFixed(2)}</span>
+          <button
+            onClick={e => { e.stopPropagation(); setIsmodal(true) }}
+            className="mt-2 flex items-center gap-1 px-3 py-1 rounded bg-blue-100 text-blue-700 text-xs font-semibold hover:bg-blue-200 transition"
+          >
+            Ver <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+      {isModal && (
+        <Modal setIsmodal={setIsmodal} id_pedido_online={pedido.id_pedido_online} isModal={isModal} nombre={nombre} />
+      )}
+    </>
+  )
 }
 
 export default ListPedidosH

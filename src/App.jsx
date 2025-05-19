@@ -43,12 +43,12 @@ function App() {
 
 
   return (
-    <div id="layout" className=" relative bg-neutral-800 h-screen ">
-   
+    <div id="layout" className=" relative  min-h-screen bg-gray-50  ">
+
 
       {/* NAVEGACION DE LA PAGINA */}
       <Aside />
-      <main className=" relative  flex flex-col w-full h-screen overflow-y-auto overflow-x-hidden gap-5  pb-5 ">
+      <main className=" relative  flex flex-col w-full h-screen overflow-y-auto overflow-x-hidden gap-5  p-5 ">
 
         {/* BARRA DE NAVEGACION */}
         <NavBar />
@@ -56,7 +56,7 @@ function App() {
         <Outlet />
       </main>
 
-
+      <NewOrderButton />
 
     </div>
   )

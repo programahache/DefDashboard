@@ -84,3 +84,59 @@ export const crearPedido = async (pedido) => {
         return { error: error.message };
     }
 }
+
+export const actualizarEstadoPedido = async (id, estado) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/pedidos/estado/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ estado })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error updating pedido:", error.message);
+        return { error: error.message };
+    }
+}
+
+export const getPedidosPaginados = async (page, limit) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/pedidos/paginados?page=${page}&limit=${limit}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching pedidos:", error.message);
+        return { error: error.message };
+    }
+}
+
+export const getPedidosDetallesById = async (id) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/pedidos/detalles/${id}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching pedido details:", error.message);
+        return { error: error.message };
+    }
+}

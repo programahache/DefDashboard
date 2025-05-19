@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getproductos } from '../../../utils/productos';
 import { getPedidosDetalles, crearPedido } from '../../../utils/pedidos';
 import { createproductos } from '../../../utils/productos';
+import { Button } from "@/components/ui/button";
 
 function CrearPedido() {
     const navigate = useNavigate();
@@ -101,7 +102,7 @@ function CrearPedido() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+        <div className="w-full h-full  mx-auto p-6 bg-white rounded-xl shadow-lg">
             <h1 className="text-3xl font-bold mb-6">Nuevo Pedido</h1>
 
             <div className="flex gap-4 mb-6">
@@ -153,12 +154,12 @@ function CrearPedido() {
                         </div>
                     </div>
 
-                    <button
+                    <Button
                         onClick={() => setStep(2)}
                         className="btn-primary mt-4"
                     >
                         Siguiente
-                    </button>
+                    </Button>
                 </div>
             )}
 

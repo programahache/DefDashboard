@@ -7,11 +7,13 @@ import UserMember from '../components/Items/UserMember';
 import MenuItem from '../components/Items/MenuItem';
 import InventarioItem from '../components/Items/InventarioItem';
 
-import { getCantidadPedidos } from '../../utils/pedidos';
+
+import { getCantidadPedidos, getPedidosPaginados } from '../../utils/pedidos';
 
 function Home() {
 
     const [cantidadPedidos, setCantidadPedidos] = useState(0);
+    const [pedidos, setPedidos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -19,8 +21,14 @@ function Home() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const data = await getCantidadPedidos();
-                setCantidadPedidos(data);
+                const cantidad = await getCantidadPedidos();
+                const pedidosData = await getPedidosPaginados(0, 10);
+                if (pedidosData.error) {
+                    throw new Error(pedidosData.error);
+                }
+                setPedidos(pedidosData.pedidos);
+                console.log(pedidosData);
+                setCantidadPedidos(cantidad);
             } catch (err) {
                 setError('No se pudo cargar la cantidad de pedidos');
             } finally {
@@ -51,27 +59,21 @@ function Home() {
                 {/* //Lista de pedidos */}
                 <Card wid="600px" hei="400px" title={"Lista de pedidos"} >
 
-                    <div className='mb-2 border-b-2 p-2'>
-                        <ListPedidosH nombre={"Pedido #35604"} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <ListPedidosH nombre={"Pedido #31784"} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <ListPedidosH nombre={"Pedido #21784"} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <ListPedidosH nombre={"Pedido #21784"} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <ListPedidosH nombre={"Pedido #21784"} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <ListPedidosH nombre={"Pedido #21784"} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <ListPedidosH nombre={"Pedido #21784"} />
-                    </div>
+                    {
+                        loading ? (
+                            <p>Cargando...</p>
+                        ) : error ? (
+                            <p>{error}</p>
+                        ) : (
+                            pedidos.map((pedido, index) => (
+                             
+                                <div key={index} className='mb-2 border-b-2 p-2'>
+                                    <ListPedidosH pedido={pedido} nombre={pedido.nombre} />
+                                </div>
+                            ))
+                        )
+                    }
+
                 </Card>
             </div>
 

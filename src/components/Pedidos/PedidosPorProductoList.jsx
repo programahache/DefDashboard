@@ -49,9 +49,9 @@ function PedidosPorProductoList() {
 
             {/* Listado de pedidos */}
             <div className='divide-y divide-gray-100'>
-                {pedidos.map((pedido) => (
+                {pedidos?.map((pedido,key) => (
                     <div
-                        key={pedido.id_pedido_online}
+                        key={key}
                         className='group flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors cursor-pointer'
                     >
                         {/* Imagen del producto */}

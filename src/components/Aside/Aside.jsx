@@ -37,9 +37,12 @@ function Aside() {
             <nav className="flex-1 flex flex-col p-2 gap-1 mt-2">
                 {[
                     { to: "/Home", icon: "home", text: "Inicio" },
-                    { to: "/finanzas", icon: "savings", text: "Finanzas" },
-                 
+                    { to: "/finanzas", icon: "savings", text: "Finanzas" },               
                     { to: "/cocina", icon: "range_hood", text: "Cocina" },
+                    { to: "/pedidos", icon: "shopping_cart", text: "Pedidos" },
+                    // { to: "/inventario", icon: "inventory_2", text: "Inventario" },
+                    // { to: "/usuarios", icon: "people", text: "Usuarios" },
+                    // { to: "/reportes", icon: "assessment", text: "Reportes" },
          
                 ].map((item, index) => (
                     <NavLink

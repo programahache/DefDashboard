@@ -1,11 +1,8 @@
 import { useState } from "react"
-import { Clock, X, Printer, User, Phone, MapPin, CreditCard, ChevronDown, ChevronUp, ExternalLink } from "lucide-react"
+import { Clock, Printer, User, Phone, MapPin, CreditCard, ChevronDown, ChevronUp, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-
-import { getPedidosDetallesById } from "../../../utils/pedidos"
-import { useEffect } from "react"
 
 // Utilidad para color de estado
 function getStatusColor(estado) {
@@ -23,113 +20,44 @@ function getStatusColor(estado) {
   }
 }
 
-function Modal({ setIsmodal, id_pedido_online }) {
+export default function PedidoDetalle({ pedido: pedidoProp }) {
   const [showDetails, setShowDetails] = useState(true)
 
-
-  // Estado para el pedido
-  const [pedido, setPedido] = useState(null)
-  // Estado para el error
-  const [error, setError] = useState(null)
-  // Estado para el loading
-  const [loading, setLoading] = useState(true)
-
-  // Efecto para obtener el pedido por ID
-  useEffect(() => {
-    const fetchPedido = async () => {
-      try {
-        setLoading(true)
-        const pedidoData = await getPedidosDetallesById(id_pedido_online)
-        if (pedidoData.error) {
-          throw new Error(pedidoData.error)
-        }
-        setPedido(pedidoData)
-      } catch (err) {
-        setError('No se pudo cargar el pedido')
-      } finally {
-        setLoading(false)
+  // Si no recibes pedido por props, usa uno de prueba:
+  const pedido = pedidoProp || {
+    id_pedido_online: "PED-001",
+    fecha_pedido: "2025-05-15T14:30:00Z",
+    cliente_nombre: "Juan Pérez",
+    cliente_telefono: "3123456789",
+    direccion_envio: "Calle Falsa 123, Ciudad",
+    metodo_pago: "Tarjeta",
+    estado: "Pendiente",
+    productos: [
+      {
+        nombre: "Pizza Margarita",
+        cantidad: 2,
+        precio_unitario: 80,
+        subtotal: 160,
+        adiciones: "Extra queso, Aceitunas"
+      },
+      {
+        nombre: "Jugo de Naranja",
+        cantidad: 1,
+        precio_unitario: 30,
+        subtotal: 30,
+        adiciones: ""
       }
-    }
-    fetchPedido()
-  }, [id_pedido_online])
-  // Si hay error, muestra un mensaje
-  if (error) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
-        <div className="w-full max-w-2xl bg-white rounded-xl shadow-xl overflow-hidden">
-          <div className="p-6">
-            <h2 className="font-bold text-lg text-red-600">Error</h2>
-            <p className="text-sm text-gray-600">{error}</p>
-          </div>
-          <div className="border-t p-4 bg-gray-50 flex justify-between items-center">
-            <Button variant="outline" onClick={() => setIsmodal(false)}>
-              Cerrar
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
+    ],
+    subtotal: 190,
+    envio: 10,
+    total: 200
   }
-  // Si está cargando, muestra un mensaje
-  if (loading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
-        <div className="w-full max-w-2xl bg-white rounded-xl shadow-xl overflow-hidden">
-          <div className="p-6">
-            <h2 className="font-bold text-lg">Cargando...</h2>
-            <p className="text-sm text-gray-600">Por favor, espere.</p>
-          </div>
-          <div className="border-t p-4 bg-gray-50 flex justify-between items-center">
-            <Button variant="outline" onClick={() => setIsmodal(false)}>
-              Cerrar
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-
-
-  // // Si no recibes pedido por props, usa uno de prueba:
-  // if (!pedido) {
-  //   pedido = {
-  //     id_pedido_online: 1234,
-  //     fecha_pedido: "2025-05-15T14:30:00Z",
-  //     cliente_nombre: "Juan Pérez",
-  //     cliente_telefono: "3123456789",
-  //     direccion_envio: "Calle Falsa 123, Ciudad",
-  //     metodo_pago: "Tarjeta",
-  //     estado: "Pendiente",
-  //     productos: [
-  //       {
-  //         nombre: "Pizza Margarita",
-  //         cantidad: 2,
-  //         precio_unitario: 80,
-  //         subtotal: 160,
-  //         adiciones: "Extra queso, Aceitunas"
-  //       },
-  //       {
-  //         nombre: "Jugo de Naranja",
-  //         cantidad: 1,
-  //         precio_unitario: 30,
-  //         subtotal: 30,
-  //         adiciones: ""
-  //       }
-  //     ],
-  //     subtotal: 190,
-  //     envio: 10,
-  //     total: 200
-  //   }
-  // }
-
-  console.log(pedido)
 
   const handlePrint = () => window.print()
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
-      <div className="w-full max-w-2xl bg-white rounded-xl shadow-xl overflow-hidden">
+    <div className="container mx-auto py-8 px-2 md:px-0">
+      <div className="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden">
         {/* Header con gradiente */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6">
           <div className="flex items-center justify-between">
@@ -148,14 +76,6 @@ function Modal({ setIsmodal, id_pedido_online }) {
                 onClick={handlePrint}
               >
                 <Printer className="h-5 w-5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full bg-white/20 hover:bg-white/30 text-white"
-                onClick={() => setIsmodal(false)}
-              >
-                <X className="h-5 w-5" />
               </Button>
             </div>
           </div>
@@ -290,8 +210,8 @@ function Modal({ setIsmodal, id_pedido_online }) {
 
         {/* Footer con acciones */}
         <div className="border-t p-4 bg-gray-50 flex justify-between items-center">
-          <Button variant="outline" onClick={() => setIsmodal(false)}>
-            Cerrar
+          <Button variant="outline" onClick={() => window.history.back()}>
+            Volver
           </Button>
           <div className="flex gap-2">
             <Button variant="outline" className="flex items-center gap-1">
@@ -305,5 +225,3 @@ function Modal({ setIsmodal, id_pedido_online }) {
     </div>
   )
 }
-
-export default Modal
