@@ -22,11 +22,6 @@ import Home from './pages/Home';
 import NewOrderButton from './components/Botones/NewOrderButton';
 
 
-
-
-
-
-
 function App() {
 
 
