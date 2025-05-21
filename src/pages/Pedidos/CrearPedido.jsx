@@ -2,10 +2,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getproductos } from '../../../utils/productos';
 import { getPedidosDetalles, crearPedido } from '../../../utils/pedidos';
+import { getClientes } from '../../../utils/clientes';
 import { createproductos } from '../../../utils/productos';
 import { Button } from "@/components/ui/button";
+import { useParams } from 'react-router-dom';
+
 
 function CrearPedido() {
+
+    const { id } = useParams();
+
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [pedido, setPedido] = useState({
@@ -19,6 +25,8 @@ function CrearPedido() {
 
     const [productosDisponibles, setProductosDisponibles] = useState([]);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
+    const [clientes, setClientes] = useState([]);
+    const [loadingClientes, setLoadingClientes] = useState(true);
 
     useEffect(() => {
         const fetchProductos = async () => {
@@ -31,6 +39,31 @@ function CrearPedido() {
         };
         fetchProductos();
     }, []);
+
+    useEffect(() => {
+        const fetchClientes = async () => {
+            try {
+                const data = await getClientes();
+                setClientes(data);
+                setLoadingClientes(false);
+
+                // Si hay id por parámetro, selecciona ese cliente
+                if (id) {
+                    const clientePorDefecto = data.find(c => String(c.id_cliente) === String(id));
+                    if (clientePorDefecto) {
+                        setPedido(prev => ({
+                            ...prev,
+                            cliente: clientePorDefecto
+                        }));
+                    }
+                }
+            } catch (error) {
+                setLoadingClientes(false);
+                console.error('Error al obtener clientes:', error);
+            }
+        };
+        fetchClientes();
+    }, [id]);
 
     const categorias = [...new Set(productosDisponibles.map(p => p.categoria))];
 

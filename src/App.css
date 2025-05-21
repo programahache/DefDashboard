@@ -1,8 +1,14 @@
+/* GLOBALS */
+
+
 #layout {
     display: flex;
     height: 100vh;
     overflow: hidden;
+    border-color: var(--bg-red);
 }
+
+
 
 
 @media (min-width: 640px) {
@@ -13,7 +19,7 @@
         ;
         grid-template-columns: auto 1fr;
         grid-template-rows: 1fr;
-
+        border-color: var(--bg-red);
         overflow-x: hidden;
 
     }

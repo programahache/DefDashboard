@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { ChevronLeft, ChevronRight, Search, ShoppingBag } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -14,15 +14,19 @@ import { Separator } from "@/components/ui/separator"
 // Importa tus utilidades
 import { getproductos } from "../../../utils/productos"
 import { crearPedido } from "../../../utils/pedidos"
+import { getClientes } from "../../../utils/clientes"
 
 import hamburguesa from "../../assets/hamburguesa.png"
 
 export default function CrearDos() {
   const navigate = useNavigate()
+  const { id } = useParams()
   const [step, setStep] = useState(1)
   const [searchTerm, setSearchTerm] = useState("")
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("all")
   const [productosDisponibles, setProductosDisponibles] = useState([])
+  const [clientes, setClientes] = useState([])
+  const [loadingClientes, setLoadingClientes] = useState(true)
 
   const [pedido, setPedido] = useState({
     cliente: {
@@ -48,6 +52,30 @@ export default function CrearDos() {
     }
     fetchProductos()
   }, [])
+
+  useEffect(() => {
+    const fetchClientes = async () => {
+      try {
+        const data = await getClientes()
+        setClientes(data)
+        setLoadingClientes(false)
+        // Si hay id por parámetro, selecciona ese cliente
+        if (id) {
+          const clientePorDefecto = data.find((c) => String(c.id_cliente) === String(id))
+          if (clientePorDefecto) {
+            setPedido((prev) => ({
+              ...prev,
+              cliente: clientePorDefecto,
+            }))
+          }
+        }
+      } catch (error) {
+        setLoadingClientes(false)
+        console.error("Error al obtener clientes:", error)
+      }
+    }
+    fetchClientes()
+  }, [id])
 
   const categorias = [...new Set(productosDisponibles.map((p) => p.categoria))]
 
@@ -108,7 +136,7 @@ export default function CrearDos() {
     e.preventDefault()
 
     const nuevoPedido = {
-      id_cliente: pedido.cliente.id,
+      id_cliente: pedido.cliente.id_cliente, // <-- usa id_cliente
       estado: pedido.estado,
       direccion_envio: pedido.direccion_envio,
       metodo_pago: pedido.metodo_pago,
@@ -141,49 +169,144 @@ export default function CrearDos() {
       </div>
 
       {step === 1 && (
-        <div className="space-y-4">
-          <div className="form-group">
-            <label className="block mb-2 font-medium">Buscar Cliente</label>
-            <Input type="text" className="w-full" placeholder="Nombre o teléfono del cliente" />
-          </div>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Información del Cliente */}
+            <div className="md:col-span-2">
+              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Información del Cliente</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+                    <Input
+                      type="text"
+                      className="w-full"
+                      value={pedido.cliente?.nombre || ""}
+                      onChange={(e) =>
+                        setPedido((prev) => ({
+                          ...prev,
+                          cliente: { ...prev.cliente, nombre: e.target.value },
+                        }))
+                      }
+                      placeholder="Ej. Juan Pérez"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                    <Input
+                      type="tel"
+                      className="w-full"
+                      value={pedido.cliente?.telefono || ""}
+                      onChange={(e) =>
+                        setPedido((prev) => ({
+                          ...prev,
+                          cliente: { ...prev.cliente, telefono: e.target.value },
+                        }))
+                      }
+                      placeholder="Ej. 3331234567"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                    <Input
+                      type="email"
+                      className="w-full"
+                      value={pedido.cliente?.email || ""}
+                      onChange={(e) =>
+                        setPedido((prev) => ({
+                          ...prev,
+                          cliente: { ...prev.cliente, email: e.target.value },
+                        }))
+                      }
+                      placeholder="Ej. cliente@ejemplo.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Dirección predeterminada</label>
+                    <Input
+                      type="text"
+                      className="w-full"
+                      value={pedido.direccion_envio || ""}
+                      onChange={(e) =>
+                        setPedido((prev) => ({
+                          ...prev,
+                          direccion_envio: e.target.value,
+                        }))
+                      }
+                      placeholder="Ej. Calle Principal #123"
+                    />
+                  </div>
+                </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-medium mb-2">Información del Cliente</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-gray-600">Nombre</label>
-                <Input
-                  type="text"
-                  className="w-full"
-                  value={pedido.cliente?.nombre || ""}
-                  onChange={(e) =>
-                    setPedido((prev) => ({
-                      ...prev,
-                      cliente: { ...prev.cliente, nombre: e.target.value },
-                    }))
-                  }
-                />
+                <div className="flex items-center space-x-2 mb-4">
+                  <input type="checkbox" id="guardar-cliente" className="rounded text-green-600 focus:ring-green-500" />
+                  <label htmlFor="guardar-cliente" className="text-sm text-gray-600">
+                    Guardar información para futuros pedidos
+                  </label>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800">
+                  <p>Los campos de nombre y teléfono son obligatorios para continuar con el pedido.</p>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm text-gray-600">Teléfono</label>
-                <Input
-                  type="tel"
-                  className="w-full"
-                  value={pedido.cliente?.telefono || "3332233"}
-                  onChange={(e) =>
-                    setPedido((prev) => ({
-                      ...prev,
-                      cliente: { ...prev.cliente, telefono: e.target.value },
-                    }))
-                  }
-                />
+            </div>
+
+            {/* Clientes recientes */}
+            <div>
+              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 h-full">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Clientes recientes</h3>
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    type="text"
+                    className="pl-10"
+                    placeholder="Buscar cliente"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                  {clientes
+                    .filter(cliente =>
+                      cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      cliente.telefono.includes(searchTerm)
+                    )
+                    .map(cliente => (
+                      <div
+                        key={cliente.id_cliente}
+                        className="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                        onClick={() =>
+                          setPedido((prev) => ({
+                            ...prev,
+                            cliente: {
+                              id_cliente: cliente.id_cliente,
+                              nombre: cliente.nombre,
+                              telefono: cliente.telefono,
+                              email: cliente.email || "",
+                            },
+                          }))
+                        }
+                      >
+                        <div className="font-medium text-gray-800">{cliente.nombre}</div>
+                        <div className="text-sm text-gray-500">{cliente.telefono}</div>
+                      </div>
+                    ))}
+                  {clientes.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      <p>No hay clientes recientes</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-
           <div className="flex justify-end">
-            <Button onClick={() => setStep(2)} className="mt-4">
-              Siguiente <ChevronRight className="ml-2 h-4 w-4" />
+            <Button
+              onClick={() => setStep(2)}
+              className="bg-green-600 hover:bg-green-700"
+              disabled={!pedido.cliente?.nombre || !pedido.cliente?.telefono}
+            >
+              Continuar con el pedido <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -344,7 +467,7 @@ export default function CrearDos() {
                       <Separator className="my-2" />
                       <div className="flex justify-between font-bold">
                         <span>Total</span>
-                        <span>${(calcularTotal() + 3)}</span>
+                        <span>${calcularTotal() + 3}</span>
                       </div>
                     </div>
                   </>

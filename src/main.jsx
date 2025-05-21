@@ -20,6 +20,7 @@ import Home from './pages/Home.jsx'
 import FormNuevoCliente from './components/Clientes/FormNuevoCliente.jsx'
 import ClientesList from './components/Clientes/ClientesList.jsx'
 import ClienteDetalle from './components/Clientes/ClienteDetalle.jsx'
+import PedidoDetalleVisual from './pages/Pedidos/PedidoDetalleVisual.jsx'
 
 const router = createBrowserRouter([
   {
@@ -81,8 +82,8 @@ const router = createBrowserRouter([
       element: <FormNuevoCliente />
     },
     {
-      path: "/pruebas/",
-      element: <ClientesList />
+      path: "/pruebas/:id",
+      element: <PedidoDetalleVisual />
 
     },
     ]
