@@ -99,7 +99,7 @@ function PedidosTable() {
     <div className="container mx-auto p-4 md:p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div className="flex gap-2 w-full justify-end">
-          <Button
+          {/* <Button
             variant="outline"
             size="sm"
             onClick={handleRefresh}
@@ -108,7 +108,7 @@ function PedidosTable() {
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
             <span>Actualizar</span>
-          </Button>
+          </Button> */}
           <Link to="/pedidos/crear">
             <Button size="sm" className="flex items-center gap-1">
               <Plus className="h-4 w-4" />
@@ -233,9 +233,11 @@ function PedidosTable() {
                         <td className="px-4 py-3">${Number(pedido.total).toFixed(2)}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon">
-                              <Eye className="h-4 w-4" />
-                            </Button>
+                            <Link to={`/pedido/${pedido.id_pedido_online}`}>
+                              <Button variant="ghost" size="icon">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </Link>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon">
@@ -292,10 +294,12 @@ function PedidosTable() {
                     <div className="text-xs text-gray-500 truncate">{pedido.direccion_envio}</div>
                     <div className="font-bold text-blue-700">${Number(pedido.total).toFixed(2)}</div>
                     <div className="flex gap-2 mt-2">
-                      <Button variant="ghost" size="sm">
-                        <Eye className="h-4 w-4" />
-                        <span className="ml-1">Ver detalles</span>
-                      </Button>
+                      <Link to={`/pedido/${pedido.id_pedido_online}`}>
+                        <Button variant="ghost" size="sm">
+                          <Eye className="h-4 w-4" />
+                          <span className="ml-1">Ver detalles</span>
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 ))

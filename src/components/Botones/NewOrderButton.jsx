@@ -8,7 +8,7 @@ function NewOrderButton() {
     const navigate = useNavigate()
     const handleNewOrder = () => {
         setIsOpen(false)
-        navigate('/pedidos/crear/dos')
+        navigate('/pedidos/crear')
     }
 
     return (

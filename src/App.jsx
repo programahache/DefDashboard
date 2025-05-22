@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { Outlet } from 'react-router-dom';
+import { Toaster } from "@/components/ui/sonner"
 
 
 import '../src/App.css'
@@ -50,7 +51,7 @@ function App() {
 
         <Outlet />
       </main>
-
+      <Toaster  />
       <NewOrderButton />
 
     </div>

@@ -10,10 +10,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
 
 // Importa tus utilidades
 import { getproductos } from "../../../utils/productos"
-import { crearPedido } from "../../../utils/pedidos"
+import { crearPedido, actualizarEstadoPedido } from "../../../utils/pedidos"
 import { getClientes } from "../../../utils/clientes"
 
 import hamburguesa from "../../assets/hamburguesa.png"
@@ -27,6 +28,7 @@ export default function CrearDos() {
   const [productosDisponibles, setProductosDisponibles] = useState([])
   const [clientes, setClientes] = useState([])
   const [loadingClientes, setLoadingClientes] = useState(true)
+  const [nota, setNota] = useState("") // Estado para la nota
 
   const [pedido, setPedido] = useState({
     cliente: {
@@ -136,18 +138,36 @@ export default function CrearDos() {
     e.preventDefault()
 
     const nuevoPedido = {
-      id_cliente: pedido.cliente.id_cliente, // <-- usa id_cliente
+      id_cliente: pedido.cliente.id_cliente,
       estado: pedido.estado,
       direccion_envio: pedido.direccion_envio,
       metodo_pago: pedido.metodo_pago,
       detalles: pedido.productos,
+      notas: nota, // Incluye la nota al crear el pedido
     }
 
     try {
       const response = await crearPedido(nuevoPedido)
-      console.log("Pedido creado:", response)
+      toast("Pedido creado y confirmado exitosamente", {
+        description: "El pedido ha sido creado y confirmado.",
+        duration: 3000,
+        icon: "✅",
+        style: {
+          backgroundColor: "#f0f4f8",
+          color: "#333",
+        },
+      })
       navigate("/pedidos")
     } catch (error) {
+      toast.error("Error al crear el pedido", {
+        description: "Hubo un problema al crear el pedido. Por favor, intenta nuevamente.",
+        duration: 3000,
+        icon: "❌",
+        style: {
+          backgroundColor: "#f8d7da",
+          color: "#721c24",
+        },
+      })
       console.error("Error al crear el pedido:", error)
     }
   }
@@ -552,6 +572,16 @@ export default function CrearDos() {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="form-group">
+            <label className="block mb-2 font-medium">Notas para el pedido</label>
+            <Textarea
+              className="w-full min-h-[80px]"
+              value={nota}
+              onChange={e => setNota(e.target.value)}
+              placeholder="Ej: Sin cebolla, entregar en portería, etc."
+            />
           </div>
 
           <div className="flex justify-between">

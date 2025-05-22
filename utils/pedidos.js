@@ -40,6 +40,47 @@ export const getCantidadPedidos = async (req, res) => {
     }
 }
 
+export const getCantidadPedidosCancelados = async (req, res) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/pedidos/cantidad/cancelados`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (typeof data.cantidad !== 'number') {
+            throw new Error("Invalid data format: Expected a number");
+        }
+
+        return data.cantidad;
+    } catch (error) {
+        console.error("Error fetching cantidad pedidos cancelados:", error.message);
+        return { error: error.message };
+    }
+}
+
+export const getCantidadPedidosEntregados = async (req, res) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/pedidos/cantidad/entregados`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (typeof data.cantidad !== 'number') {
+            throw new Error("Invalid data format: Expected a number");
+        }
+
+        return data.cantidad;
+    } catch (error) {
+        console.error("Error fetching cantidad pedidos entregados:", error.message);
+        return { error: error.message };
+    }
+}
 
 export const getPedidos = async (req, res) => {
     try {

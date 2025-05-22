@@ -58,15 +58,9 @@ const router = createBrowserRouter([
     },
     {
       path: "/pedidos/crear",
-      element: <CrearPedido />
-
-    },
-    {
-      path: "/pedidos/crear/dos",
       element: <CrearDos />
 
     },
-
     {
       path: "/clientes/",
       element: <ClientesList />
@@ -82,9 +76,8 @@ const router = createBrowserRouter([
       element: <FormNuevoCliente />
     },
     {
-      path: "/pruebas/:id",
+      path: "/pedido/:id",
       element: <PedidoDetalleVisual />
-
     },
     ]
   }
