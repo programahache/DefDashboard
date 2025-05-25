@@ -63,7 +63,7 @@ export default function ClienteDetalle() {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    <Link to={`/admin/clientes/${cliente.id_cliente}/editar`}>
+                    <Link to={`/clientes/${cliente.id_cliente}/editar`}>
                         <Button variant="outline" className="flex items-center gap-1">
                             <Edit className="h-4 w-4" />
                             <span>Editar</span>
@@ -193,7 +193,7 @@ export default function ClienteDetalle() {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="text-lg">Historial de pedidos</CardTitle>
-                            <Link to={`/admin/pedidos/nuevo?cliente=${cliente.id_cliente}`}>
+                            <Link to={`/pedido/nuevo?cliente=${cliente.id_cliente}`}>
                                 <Button className="bg-green-600 hover:bg-green-700">
                                     <ShoppingBag className="h-4 w-4 mr-2" />
                                     Nuevo Pedido
@@ -208,7 +208,7 @@ export default function ClienteDetalle() {
                                         const estadoKey = pedido && pedido.estado ? pedido.estado.trim().toLowerCase() : "";
                                         const badgeColor = ESTADO_PEDIDO_COLORS[estadoKey] || "bg-gray-100 text-gray-800";
                                         return (
-                                            <Link to={`/admin/pedidos/${pedido && (pedido.id_pedido_online ?? pedido.id_pedido_online)}`} key={pedido && (pedido.id_pedido_online ?? pedido.id)}>
+                                            <Link to={`/pedido/${pedido && (pedido.id_pedido_online ?? pedido.id_pedido_online)}`} key={pedido && (pedido.id_pedido_online ?? pedido.id)}>
                                                 <div className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                                                     <div className="flex flex-col md:flex-row justify-between">
                                                         <div>
@@ -255,7 +255,7 @@ export default function ClienteDetalle() {
                                     </div>
                                     <h3 className="text-lg font-medium text-gray-900 mb-2">No hay pedidos</h3>
                                     <p className="text-gray-500 mb-6">Este cliente aún no ha realizado ningún pedido</p>
-                                    <Link to={`/admin/pedidos/nuevo?cliente=${cliente.id_cliente}`}>
+                                    <Link to={`/pedidos/nuevo?cliente=${cliente.id_cliente}`}>
                                         <Button className="bg-green-600 hover:bg-green-700">
                                             <ShoppingBag className="h-4 w-4 mr-2" />
                                             Crear Primer Pedido
