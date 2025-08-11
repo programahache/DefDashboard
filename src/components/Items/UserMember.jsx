@@ -14,7 +14,7 @@ function UserMember({ nombre, status }) {
                 </div>
             </div>
             <div>
-                <button className='hover:bg-blue-300 border border-sky-500  px-2 py-1 rounded-lg transtion-all '>More</button>
+                <button className='hover:bg-blue-300 border border-sky-500  px-2 py-1 rounded-lg transtion-all '>Ver</button>
             </div>
         </div>
     )

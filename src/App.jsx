@@ -47,7 +47,7 @@ function App() {
       <main className=" relative  flex flex-col w-full h-screen overflow-y-auto overflow-x-hidden gap-5  p-5 ">
 
         {/* BARRA DE NAVEGACION */}
-        <NavBar />
+    
 
         <Outlet />
       </main>

@@ -16,7 +16,7 @@ function MenuItem({ nombre, status, numpedidos, setIsmodal }) {
                 <div >
                     <p className='font-bold mb-1 '>{nombre}</p>
                     {numpedidos ? null : <span className={`  ${status ? "bg-green-300" : "bg-red-300"}  px-2 py-1 rounded tex-center font-semibold capitalize text-sm`}>Activo</span>}
-                    {numpedidos ? <p>Cantidad de pedidos hoy: {numpedidos} </p> : null}
+                    {numpedidos ? <p>Cantidad de pedidos: <span className='font-semibold'>{numpedidos}</span> </p> : null}
                 </div>
             </div>
             <div>

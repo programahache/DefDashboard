@@ -8,7 +8,11 @@ import MenuItem from '../components/Items/MenuItem';
 import InventarioItem from '../components/Items/InventarioItem';
 
 
+
+
 import { getCantidadPedidos, getPedidosPaginados } from '../../utils/pedidos';
+import { getClientesRecientes } from '../../utils/clientes';
+import {getPlatosMasPedidos} from '../../utils/metricas';
 
 function Home() {
 
@@ -16,6 +20,8 @@ function Home() {
     const [pedidos, setPedidos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [clientesRecientes, setClientesRecientes] = useState([]);
+    const [platosMasPedidos, setPlatosMasPedidos] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,12 +29,17 @@ function Home() {
                 setLoading(true);
                 const cantidad = await getCantidadPedidos();
                 const pedidosData = await getPedidosPaginados(0, 10);
+                const clientesData = await getClientesRecientes();
+                const platosMasPedidosData = await getPlatosMasPedidos();
+
                 if (pedidosData.error) {
                     throw new Error(pedidosData.error);
                 }
                 setPedidos(pedidosData.pedidos);
+                setClientesRecientes(clientesData);
                 console.log(pedidosData);
                 setCantidadPedidos(cantidad);
+                setPlatosMasPedidos(platosMasPedidosData);
             } catch (err) {
                 setError('No se pudo cargar la cantidad de pedidos');
             } finally {
@@ -44,17 +55,14 @@ function Home() {
         <>
             {/* GADGETS DE DATOS DEL DIA DE HOY */}
             <div className='flex flex-col lg:flex-row w-full gap-2 justify-around px-2'>
-                <MiniCard title={"INGRESOS "} value={"100000020.23"} since={"ayer"} porcentaje={55} icon={"payments"} iconColor={""} ismoney={true} />
-                <MiniCard title={"Nuevos clientes"} value={103} since={"10/01/24"} porcentaje={55} icon={"groups"} />
-                <MiniCard title={"Pedidos"} value={cantidadPedidos} since={"25/02/22"} porcentaje={155} icon={"checklist"} />
-                <MiniCard title={"Ocupación"} value={"73%"} since={"10/20/24"} porcentaje={55} icon={"table_restaurant"} />
+                <MiniCard title={"Ventas del dia"} value={"1000000"} since={"ayer"} porcentaje={55} icon={"payments"} iconColor={""} ismoney={true} />
+                <MiniCard title={"Total de pedidos hoy"} value={cantidadPedidos} since={"25/02/22"} porcentaje={155} icon={"checklist"} />
+                <MiniCard title={"Tickets Promedios"} value={103} since={"10/01/24"} porcentaje={55} icon={"groups"} />
+                {/* <MiniCard title={"Ocupación"} value={"73%"} since={"10/20/24"} porcentaje={55} icon={"table_restaurant"} /> */}
             </div>
 
             <div className='flex flex-col sm:flex-row w-full gap-2 justify-around px-2'>
-                <Card wid="sm:w-[75%]" hei="500px" title={"Ventas totales"}>
-                    <p> <span className='material-symbols-outlined text-sm font-bold text-green-500'>arrow_upward</span>4% mas en 2024</p>
-                    <LineChart />
-                </Card>
+              
 
                 {/* //Lista de pedidos */}
                 <Card wid="600px" hei="400px" title={"Lista de pedidos"} >
@@ -66,7 +74,7 @@ function Home() {
                             <p>{error}</p>
                         ) : (
                             pedidos.map((pedido, index) => (
-                             
+
                                 <div key={index} className='mb-2 border-b-2 p-2'>
                                     <ListPedidosH pedido={pedido} nombre={pedido.nombre} />
                                 </div>
@@ -75,6 +83,45 @@ function Home() {
                     }
 
                 </Card>
+
+                <Card wid="600px" hei="400px" title={"Clientes recientes"} >
+
+                    {
+                        loading ? (
+                            <p>Cargando...</p>
+                        ) : error ? (
+                            <p>{error}</p>
+                        ) : (
+                            clientesRecientes.map((cliente, index) => (
+
+                                <div key={index} className='mb-2 border-b-2 p-2'>
+                                    <UserMember status={true}  nombre={cliente.nombre} />
+                                </div>
+                            ))
+                        )
+                    }
+
+                </Card>
+
+                    {/* //PLATOS MAS PEDIDOS */}
+                <Card wid="600px" hei="400px" title={"Platos mas pedidos"} >
+                 {
+                    loading ? (
+                        <p>Cargando...</p>
+                    ) : error ? (
+                        <p>{error}</p>
+                    ) : (
+                        platosMasPedidos.map((plato, index) => (
+
+                            <div key={index} className='mb-2 border-b-2 p-2'>
+                                <MenuItem  nombre={plato.nombre} numpedidos={plato.cantidad_pedidos} />
+                            </div>
+                        ))
+                    )
+                 }
+
+                </Card>
+
             </div>
 
             <div className='flex flex-col sm:flex-row w-full gap-2 justify-around px-2'>
@@ -95,22 +142,7 @@ function Home() {
                     </div>
                 </Card>
 
-                {/* //PLATOS MAS PEDIDOS */}
-                <Card wid="600px" hei="400px" title={"Platos mas pedidos"} >
-                    <div className='mb-2 border-b-2 p-2'>
-                        <MenuItem status={true} nombre={"Pussy Burguer"} numpedidos={10} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <MenuItem status={true} nombre={"Little Mac"} numpedidos={7} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <MenuItem status={false} nombre={"Canabis Burguer "} numpedidos={5} />
-                    </div>
-                    <div className='mb-2 border-b-2 p-2'>
-                        <MenuItem status={true} nombre={"Red Hot Burguer"} numpedidos={10} />
-                    </div>
-
-                </Card>
+            
 
 
                 {/* //Lista de pedidos */}
