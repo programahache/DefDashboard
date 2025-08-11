@@ -56,7 +56,7 @@ export default function FormNuevoCliente({ onSave, onCancel, isLoading, clienteI
         <div className="container mx-auto p-4 md:p-6">
             {/* Cabecera */}
             <div className="flex items-center gap-3 mb-6">
-                <Link to="/admin/clientes">
+                <Link to="/clientes">
                     <Button variant="outline" size="icon" type="button">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>

@@ -31,7 +31,7 @@ function getStatusColor(estado) {
   }
 }
 
-function PedidosTable() {
+function PedidosTable({fetchData}) {
   const [pedidos, setPedidos] = useState([])
   const [filteredPedidos, setFilteredPedidos] = useState([])
   const [loading, setLoading] = useState(false)
@@ -58,6 +58,7 @@ function PedidosTable() {
       }
     }
     fetchPedidos()
+    
   }, [currentPage])
 
   useEffect(() => {
@@ -88,6 +89,7 @@ function PedidosTable() {
         pedido.id_pedido_online === id ? { ...pedido, estado: nuevoEstado } : pedido
       )
     )
+    fetchData()
   }
 
   const handleRefresh = () => {
