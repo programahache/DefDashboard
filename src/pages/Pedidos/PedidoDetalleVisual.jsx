@@ -9,7 +9,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
-import { getPedidosDetallesById } from "../../../utils/pedidos"
+import { getPedidosDetallesById, actualizarEstadoPedido } from "../../../utils/pedidos"
 
 function getStatusColor(estado) {
   switch ((estado || "").toLowerCase()) {
@@ -17,7 +17,7 @@ function getStatusColor(estado) {
     case "confirmado": return "bg-blue-100 text-blue-800 border-blue-300"
     case "en preparación": return "bg-blue-100 text-blue-800 border-blue-300"
     case "en camino": return "bg-purple-100 text-purple-800 border-purple-300"
-    case "entregado": return "bg-green-100 text-green-800 border-green-300"
+    case "completado": return "bg-green-100 text-green-800 border-green-300"
     case "cancelado": return "bg-red-100 text-red-800 border-red-300"
     default: return "bg-gray-100 text-gray-800 border-gray-300"
   }
@@ -33,6 +33,7 @@ const pedidoInicial = {
   metodo_pago: "",
   fecha_pedido: "",
   productos: [],
+  notas: "Sin notas adicionales"
   // Puedes agregar aquí más campos si tu backend los agrega después
 }
 
@@ -59,22 +60,32 @@ export default function PedidoDetalleVisual() {
   }, [id])
 
   const handlePrint = () => window.print()
-  const handleActualizarEstado = () => {
+  const handleActualizarEstado = async () => {
     if (nuevoEstado && pedido) {
-      setPedido(prev => ({
-        ...prev,
-        estado: nuevoEstado,
-        historial_estados: [
-          ...(prev.historial_estados || []),
-          {
-            estado: nuevoEstado,
-            fecha: new Date().toISOString(),
-            usuario: "Admin",
-            comentario: comentarioEstado
-          }
-        ]
-      }))
-      setComentarioEstado("")
+      try {
+        await actualizarEstadoPedido(pedido.id_pedido_online, nuevoEstado, comentarioEstado)
+        setPedido(prev => ({
+          ...prev,
+          estado: nuevoEstado,
+          historial_estados: [
+            ...(prev.historial_estados || []),
+            {
+              estado: nuevoEstado,
+              fecha: new Date().toISOString(),
+              usuario: "Admin",
+              comentario: comentarioEstado
+            }
+          ]
+        }))
+        setComentarioEstado("")
+        setNuevoEstado("")
+        // Opcional: mostrar un mensaje de éxito
+        // toast.success("Estado actualizado correctamente")
+      } catch (error) {
+        // Opcional: mostrar un mensaje de error
+        // toast.error("Error al actualizar el estado")
+        console.error("Error al actualizar el estado:", error)
+      }
     }
   }
   const calcularProgresoEntrega = () => {
@@ -82,7 +93,7 @@ export default function PedidoDetalleVisual() {
       case "pendiente": return 0
       case "en preparación": return 25
       case "en camino": return 50
-      case "entregado": return 100
+      case "completado": return 100
       default: return 0
     }
   }
@@ -123,12 +134,12 @@ export default function PedidoDetalleVisual() {
               <span>
                 {pedido.fecha_pedido
                   ? new Date(pedido.fecha_pedido).toLocaleDateString("es-CO", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
                   : ""}
               </span>
             </div>
@@ -167,9 +178,9 @@ export default function PedidoDetalleVisual() {
                   Entrega estimada:{" "}
                   {pedido.fecha_pedido
                     ? new Date(pedido.fecha_pedido).toLocaleTimeString("es-CO", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
                     : ""}
                 </span>
               </div>
@@ -186,7 +197,7 @@ export default function PedidoDetalleVisual() {
               <option value="Confirmado">Confirmado</option>
               <option value="En preparación">En preparación</option>
               <option value="En camino">En camino</option>
-              <option value="Entregado">Entregado</option>
+              <option value="Completado">Completado</option>
               <option value="Cancelado">Cancelado</option>
             </select>
             <Button
@@ -202,7 +213,7 @@ export default function PedidoDetalleVisual() {
         <div className="mt-4">
           <div className="flex justify-between text-sm text-gray-500 mb-2">
             <span>Pedido recibido</span>
-            <span>Entregado</span>
+            <span>Completado</span>
           </div>
           <div className="w-full h-2 bg-gray-200 rounded">
             <div
@@ -350,7 +361,7 @@ export default function PedidoDetalleVisual() {
                 </CardHeader>
                 <CardContent>
                   <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <p className="text-gray-700">{notas}</p>
+                    <p className="text-gray-700">{pedido.notas}</p>
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -451,9 +462,9 @@ export default function PedidoDetalleVisual() {
                   <p className="font-medium">
                     {pedido.fecha_pedido
                       ? new Date(pedido.fecha_pedido).toLocaleTimeString("es-CO", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
                       : ""}
                   </p>
                 </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { ChevronLeft, ChevronRight, Search, ShoppingBag } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,11 +11,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
+import { ArrowLeft } from "lucide-react"
 
 // Importa tus utilidades
 import { getproductos } from "../../../utils/productos"
-import { crearPedido } from "../../../utils/pedidos"
+import { crearPedido, actualizarEstadoPedido } from "../../../utils/pedidos"
 import { getClientes } from "../../../utils/clientes"
+import { getIngredientesByProducto, actualizarIngrediente } from '../../../utils/ingredientes';
 
 import hamburguesa from "../../assets/hamburguesa.png"
 
@@ -27,6 +31,9 @@ export default function CrearDos() {
   const [productosDisponibles, setProductosDisponibles] = useState([])
   const [clientes, setClientes] = useState([])
   const [loadingClientes, setLoadingClientes] = useState(true)
+  const [nota, setNota] = useState("") // Estado para la nota
+  const [stockInsuficiente, setStockInsuficiente] = useState([]);
+  const [errorStock, setErrorStock] = useState(null);
 
   const [pedido, setPedido] = useState({
     cliente: {
@@ -85,22 +92,54 @@ export default function CrearDos() {
     return matchesCategoria && matchesSearch
   })
 
-  const handleAgregarProducto = (producto, cantidad) => {
+  const handleAgregarProducto = async (producto, cantidad) => {
     if (cantidad < 1) return
 
-    setPedido((prev) => ({
-      ...prev,
-      productos: [
-        ...prev.productos.filter((p) => p.id_producto !== producto.id_producto),
-        {
-          id_producto: producto.id_producto,
-          nombre: producto.nombre,
-          precio_unitario: producto.precio,
-          cantidad: cantidad,
-          subtotal: producto.precio * cantidad,
-        },
-      ],
-    }))
+    const ingredientesRequeridos = await getIngredientesByProducto(producto.id);
+  
+    const faltantes = [];
+    for (const ingrediente of ingredientesRequeridos) {
+      const stockNecesario = producto.ingredientes.find(i => i.id === ingrediente.id)?.cantidad || 0;
+      
+      if (ingrediente.stock < stockNecesario) {
+        faltantes.push({
+          ...ingrediente,
+          requerido: stockNecesario
+        });
+      }
+    }
+
+    if (faltantes.length > 0) {
+      setStockInsuficiente(faltantes);
+      setErrorStock(`Stock insuficiente para: ${faltantes.map(f => f.nombre).join(', ')}`);
+      return;
+    }
+
+    try {
+      for (const ingrediente of ingredientesRequeridos) {
+        await actualizarIngrediente(
+          ingrediente.id, 
+          -producto.ingredientes.find(i => i.id === ingrediente.id).cantidad
+        );
+      }
+      
+      setPedido((prev) => ({
+        ...prev,
+        productos: [
+          ...prev.productos.filter((p) => p.id_producto !== producto.id_producto),
+          {
+            id_producto: producto.id_producto,
+            nombre: producto.nombre,
+            precio_unitario: producto.precio,
+            cantidad: cantidad,
+            subtotal: producto.precio * cantidad,
+          },
+        ],
+      }))
+      setErrorStock(null);
+    } catch (error) {
+      toast.error('Error actualizando stock');
+    }
   }
 
   const handleCantidadChange = (producto, cantidad) => {
@@ -136,24 +175,45 @@ export default function CrearDos() {
     e.preventDefault()
 
     const nuevoPedido = {
-      id_cliente: pedido.cliente.id_cliente, // <-- usa id_cliente
+      id_cliente: pedido.cliente.id_cliente,
       estado: pedido.estado,
       direccion_envio: pedido.direccion_envio,
       metodo_pago: pedido.metodo_pago,
       detalles: pedido.productos,
+      notas: nota, // Incluye la nota al crear el pedido
     }
 
     try {
       const response = await crearPedido(nuevoPedido)
-      console.log("Pedido creado:", response)
+      toast("Pedido creado y confirmado exitosamente", {
+        description: "El pedido ha sido creado y confirmado.",
+        duration: 3000,
+        icon: "✅",
+        style: {
+          backgroundColor: "#f0f4f8",
+          color: "#333",
+        },
+      })
       navigate("/pedidos")
     } catch (error) {
+      toast.error("Error al crear el pedido", {
+        description: "Hubo un problema al crear el pedido. Por favor, intenta nuevamente.",
+        duration: 3000,
+        icon: "❌",
+        style: {
+          backgroundColor: "#f8d7da",
+          color: "#721c24",
+        },
+      })
       console.error("Error al crear el pedido:", error)
     }
   }
 
   return (
     <div className="w-full h-fit mx-auto p-6 bg-white rounded-xl shadow-lg">
+        <Button variant="ghost" size="icon" onClick={() => navigate("/pedidos")}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
       <h1 className="text-3xl font-bold mb-6">Nuevo Pedido</h1>
 
       <div className="flex gap-4 mb-6">
@@ -167,6 +227,24 @@ export default function CrearDos() {
           Paso 3: Confirmación
         </div>
       </div>
+
+      {errorStock && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center gap-2 text-red-600">
+            <AlertCircle className="h-5 w-5" />
+            <h4 className="font-semibold">Problemas de stock</h4>
+          </div>
+          <div className="mt-2 grid gap-2">
+            {stockInsuficiente.map((item) => (
+              <div key={item.id} className="text-sm">
+                <span className="font-medium">{item.nombre}:</span>
+                <span> Necesario {item.requerido}{item.unidad}</span>
+                <span> | Disponible {item.stock}{item.unidad}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {step === 1 && (
         <div className="space-y-6">
@@ -483,8 +561,7 @@ export default function CrearDos() {
 
           <div className="flex justify-between mt-6">
             <Button onClick={() => setStep(1)} variant="outline">
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Anterior
+              <ChevronLeft className="mr-2 h-4 w-4" /> Anterior
             </Button>
             <Button
               onClick={() => setStep(3)}
@@ -552,6 +629,16 @@ export default function CrearDos() {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="form-group">
+            <label className="block mb-2 font-medium">Notas para el pedido</label>
+            <Textarea
+              className="w-full min-h-[80px]"
+              value={nota}
+              onChange={e => setNota(e.target.value)}
+              placeholder="Ej: Sin cebolla, entregar en portería, etc."
+            />
           </div>
 
           <div className="flex justify-between">

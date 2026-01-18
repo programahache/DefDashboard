@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { Outlet } from 'react-router-dom';
+import { Toaster } from "@/components/ui/sonner"
 
 
 import '../src/App.css'
@@ -46,11 +47,11 @@ function App() {
       <main className=" relative  flex flex-col w-full h-screen overflow-y-auto overflow-x-hidden gap-5  p-5 ">
 
         {/* BARRA DE NAVEGACION */}
-        <NavBar />
+    
 
         <Outlet />
       </main>
-
+      <Toaster  />
       <NewOrderButton />
 
     </div>

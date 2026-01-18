@@ -251,3 +251,19 @@ export const getClientesByIdUsuario = async (idUsuario) => {
     }
 }
 
+export const getClientesRecientes = async () => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/clientes/ultimos-30-dias/paginado?page=0&limit=10`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching clientes paginados:", error);
+        return null;
+    }
+}
+
+
+

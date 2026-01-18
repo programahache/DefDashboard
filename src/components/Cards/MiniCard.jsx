@@ -9,7 +9,7 @@ function MiniCard({ title, since, value, porcentaje, icon, ismoney }) {
 
 
     return (
-        <div className='card bg-amber-50 sm:w-[100%] lg:w-[25%] py-4 px-5 rounded-xl flex justify-between shadow-inner  shadow-red-200'>
+        <div className='card   sm:w-[100%] lg:w-[25%] py-4 px-5 rounded-xl flex justify-between border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out'>
 
             <div className='flex flex-col gap-1'>
                 <div>
